@@ -9,10 +9,10 @@ export async function POST(request) {
 
     await connectDb();
 
-    const formData = await request.formData();
+    const body = await request.json();
 
     const razorpay_order_id =
-      formData.get("razorpay_order_id");
+      body.razorpay_order_id;
 
     if (!razorpay_order_id) {
 
@@ -46,15 +46,19 @@ export async function POST(request) {
       });
     }
 
-    return NextResponse.redirect(
+    return NextResponse.json({
 
-      `${process.env.NEXT_PUBLIC_URL}/${payment.to_user}?paymentdone=true`
+      success: true,
 
-    );
+      redirectUrl:
+        `${process.env.NEXT_PUBLIC_URL}/${payment.to_user}?paymentdone=true`
+    });
 
   }
 
   catch (error) {
+
+    console.log(error);
 
     return NextResponse.json({
 
