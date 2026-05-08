@@ -90,8 +90,27 @@ const PaymentPage = ({ username }) => {
 
         order_id: order.id,
 
-        callback_url:
-          "http://localhost:3000/api/razorpay",
+        handler: async function (response) {
+
+          const res = await fetch("/api/razorpay", {
+
+            method: "POST",
+
+            headers: {
+              "Content-Type": "application/json",
+            },
+
+            body: JSON.stringify(response),
+          });
+
+          const data = await res.json();
+
+          if (data.success) {
+
+            window.location.href =
+              data.redirectUrl;
+          }
+        },
 
         prefill: {
 
